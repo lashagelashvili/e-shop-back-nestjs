@@ -10,12 +10,12 @@ export class CategoriesService {
     @InjectModel('Category') private categoryModel: Model<Category>,
   ) {}
 
-  async getCategories() {
+  async getCategories(): Promise<ICategory[]> {
     const categories = await this.categoryModel.find();
     return categories;
   }
 
-  async getCategoryById(id: string) {
+  async getCategoryById(id: string): Promise<ICategory> {
     const category = await this.categoryModel.findById(id);
 
     if (!category) {
@@ -28,7 +28,7 @@ export class CategoriesService {
     return category;
   }
 
-  async createCategory(categoryBody: ICategory) {
+  async createCategory(categoryBody: ICategory): Promise<ICategory> {
     let category = new this.categoryModel({
       name: categoryBody.name,
       icon: categoryBody.icon,
@@ -47,7 +47,10 @@ export class CategoriesService {
     return category;
   }
 
-  async updateCategory(id: string, categoryBody: ICategory) {
+  async updateCategory(
+    id: string,
+    categoryBody: ICategory,
+  ): Promise<ICategory> {
     const category = await this.categoryModel.findByIdAndUpdate(
       id,
       categoryBody,
@@ -64,7 +67,10 @@ export class CategoriesService {
     return category;
   }
 
-  async deleteCategory(id: string) {
+  async deleteCategory(id: string): Promise<{
+    success: boolean;
+    message: string;
+  }> {
     return this.categoryModel
       .findByIdAndDelete(id)
       .then((category) => {
