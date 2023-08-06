@@ -13,3 +13,9 @@ export class Category {
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
+
+CategorySchema.virtual('id').get(function () {
+  return this.color;
+});
+
+CategorySchema.set('toJSON', { virtuals: true });
