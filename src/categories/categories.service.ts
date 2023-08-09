@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Category } from 'src/schemas/categories.schema';
@@ -19,9 +23,8 @@ export class CategoriesService {
     const category = await this.categoryModel.findById(id);
 
     if (!category) {
-      throw new HttpException(
+      throw new NotFoundException(
         'The category with the given ID was not found',
-        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -38,10 +41,7 @@ export class CategoriesService {
     category = await category.save();
 
     if (!category) {
-      throw new HttpException(
-        'the category cannot be created!',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('the category cannot be created!');
     }
 
     return category;
@@ -58,10 +58,7 @@ export class CategoriesService {
     );
 
     if (!category) {
-      throw new HttpException(
-        'the category cannot be updated!',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('the category cannot be updated!');
     }
 
     return category;
@@ -77,17 +74,11 @@ export class CategoriesService {
         if (category) {
           return { success: true, message: 'the category has been deleted' };
         } else {
-          throw new HttpException(
-            { success: false, message: 'category not found' },
-            HttpStatus.NOT_FOUND,
-          );
+          throw new NotFoundException('category not found');
         }
       })
       .catch((err) => {
-        throw new HttpException(
-          { success: false, error: err },
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new BadRequestException({ success: false, message: err });
       });
   }
 }
